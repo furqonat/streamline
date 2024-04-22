@@ -1,0 +1,6 @@
+{
+  "name": "movil",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/movil/src",
+  "tags": []
+}

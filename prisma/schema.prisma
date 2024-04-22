@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id         String         @id @default(cuid())
+  name       String
+  username   String         @unique
+  email      String         @unique
+  password   String
+  created_at DateTime       @default(now())
+  avatar_url String?
+  channel    channel?
+  view       view[]
+  comment    comment[]
+  subscribe  subscription[]
+  like       like[]
+  mention    mention[]
+}
+
+model channel {
+  id                 String         @id @default(cuid())
+  name               String
+  bio                String?
+  description        String?
+  channel_avatar_url String?
+  channel_banner_url String?
+  user_id            String         @unique
+  thumbnail_url      String?
+  user               user           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  videos             video[]
+  posts              post[]
+  subscribers        subscription[]
+  subcriber_count    Int            @default(0)
+  created_at         DateTime       @default(now())
+}
+
+model subscription {
+  id         String   @id @default(cuid())
+  user_id    String
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  channel_id String
+  channel    channel  @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  active     Boolean  @default(false)
+  notify     Boolean  @default(false)
+}
+
+model video {
+  id          String    @id @default(cuid())
+  title       String
+  description String?   @db.Text
+  url         String
+  channel_id  String
+  channel     channel   @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  view        view[]
+  view_count  Int       @default(0)
+  comment     comment[]
+  like        like[]
+  like_count  Int       @default(0)
+  hashtag     hashtag[]
+}
+
+model post {
+  id         String    @id @default(cuid())
+  title      String
+  content    String
+  channel_id String
+  channel    channel   @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  view       view[]
+  view_count Int       @default(0)
+  comment    comment[]
+  like       like[]
+  like_count Int       @default(0)
+  hashtag    hashtag[]
+}
+
+model view {
+  id         String   @id @default(cuid())
+  user_id    String
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  video_id   String?
+  video      video?   @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  post_id    String?
+  post       post?    @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  hashtag    hashtag? @relation(fields: [hashtag_id], references: [id], onDelete: Cascade)
+  hashtag_id String?
+}
+
+model comment {
+  id         String    @id @default(cuid())
+  comment_id String    @unique @default(cuid())
+  content    String
+  user_id    String
+  user       user      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post_id    String?
+  post       post?     @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  video_id   String?
+  video      video?    @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  reply      comment?  @relation("reply", fields: [comment_id], references: [id], onDelete: Cascade)
+  replies    comment[] @relation("reply")
+  like       like[]
+  like_count Int       @default(0)
+  created_at DateTime  @default(now())
+  piped      Boolean   @default(false)
+  hashtag    hashtag[]
+  mention    mention[]
+}
+
+model like {
+  id         String   @id @default(cuid())
+  user_id    String
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post_id    String?
+  post       post?    @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  video_id   String?
+  video      video?   @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  comment_id String?
+  comment    comment? @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+}
+
+model hashtag {
+  id         String   @id @default(cuid())
+  name       String
+  video_id   String
+  video      video    @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  post_id    String
+  post       post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  comment_id String
+  comment    comment  @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  view_count Int      @default(0)
+  view       view[]
+}
+
+model mention {
+  id         String   @id @default(cuid())
+  user_id    String
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  comment_id String
+  comment    comment  @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+}
