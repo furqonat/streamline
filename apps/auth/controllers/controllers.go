@@ -2,6 +2,7 @@ package controllers
 
 import (
 	misc_v1 "apps/auth/controllers/v1/misc"
+
 	"go.uber.org/fx"
 )
 

@@ -22,6 +22,20 @@
     },
     "lint": {
       "executor": "@nx-golang/gin:lint"
+    },
+    "generate-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "cp ../../prisma/schema.prisma schema.prisma",
+          "sed -i '1i\\generator db {\\\n provider =\"go run github.com/steebchen/prisma-client-go\" \\\n}'  schema.prisma",
+          "sed -i '/generator client {/,/}/d' schema.prisma",
+          "go run github.com/steebchen/prisma-client-go generate --schema=schema.prisma ",
+          "rm schema.prisma"
+        ],
+        "parallel": false,
+        "cwd": "apps/auth"
+      }
     }
   },
   "tags": []

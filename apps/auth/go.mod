@@ -18,6 +18,8 @@ require (
 	github.com/alecthomas/repr v0.0.0-20210801044451-80ca428c5142 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
+	github.com/shopspring/decimal v1.4.0 // indirect
+	github.com/steebchen/prisma-client-go v0.37.0 // indirect
 )
 
 require (

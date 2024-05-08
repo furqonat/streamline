@@ -13,6 +13,7 @@ model user {
   username   String         @unique
   email      String         @unique
   password   String
+  dob        DateTime
   created_at DateTime       @default(now())
   avatar_url String?
   channel    channel?
@@ -21,6 +22,27 @@ model user {
   subscribe  subscription[]
   like       like[]
   mention    mention[]
+  roles      role[]
+  auth       auth[]
+}
+
+model role {
+  id         String   @id @default(cuid())
+  name       String
+  users      user[]
+  created_at DateTime @default(now())
+}
+
+model auth {
+  id            String   @id @default(cuid())
+  user_id       String
+  user          user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  token         String
+  created_at    DateTime @default(now())
+  refresh_token String
+  device        String?
+  ip_address    String?
+  user_agent    String?
 }
 
 model channel {

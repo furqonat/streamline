@@ -8,6 +8,7 @@ import (
 type Env struct {
 	ServerPort  string `mapstructure:"SERVER_PORT"`
 	Environment string `mapstructure:"ENV"`
+	JwtSecret   string `mapstructure:"JWT_SECRET"`
 }
 
 // NewEnv creates a new environment
