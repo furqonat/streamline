@@ -40,7 +40,11 @@ func bootstrap(
 				if env.Environment == "development" {
 					host = "127.0.0.1"
 				}
-				handler.Gin.Run(host + ":" + env.ServerPort)
+
+				err := handler.Gin.Run(host + ":" + env.ServerPort)
+				if err != nil {
+				  logger.Fatalf("Unable start server")
+				}
 			}()
 			return nil
 		},

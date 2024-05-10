@@ -6,6 +6,7 @@ import "go.uber.org/fx"
 var Module = fx.Options(
 	fx.Provide(NewRoutes),
 	fx.Provide(NewMiscRoutes),
+	fx.Provide(NewAuthRoutes),
 )
 
 // Routes contains multiple routes

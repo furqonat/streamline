@@ -1,5 +1,7 @@
 package dto
 
+import "time"
+
 type SignInDto struct {
 	Username  string  `json:"username" binding:"required"`
 	Password  string  `json:"password" binding:"required"`
@@ -9,8 +11,9 @@ type SignInDto struct {
 }
 
 type SignUpDto struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	SignInDto
+	Name     string    `json:"name" binding:"required"`
+	Email    string    `json:"email" binding:"required"`
+	Password string    `json:"password" binding:"required"`
+	Dob      time.Time `json:"dob" binding:"required"`
 }

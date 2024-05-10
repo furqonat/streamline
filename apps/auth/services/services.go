@@ -6,5 +6,6 @@ import (
 
 // Module exports services present
 var Module = fx.Options(
-// fx.Provide()
+	// fx.Provide()
+	fx.Provide(NewAuthService),
 )
