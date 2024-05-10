@@ -12,8 +12,7 @@ type SignInDto struct {
 
 type SignUpDto struct {
 	SignInDto
-	Name     string    `json:"name" binding:"required"`
-	Email    string    `json:"email" binding:"required"`
-	Password string    `json:"password" binding:"required"`
-	Dob      time.Time `json:"dob" binding:"required"`
+	Name  string    `json:"name" binding:"required"`
+	Email string    `json:"email" binding:"required"`
+	Dob   time.Time `json:"dob" binding:"required"`
 }
