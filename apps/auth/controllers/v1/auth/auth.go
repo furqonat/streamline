@@ -43,7 +43,7 @@ func (a AuthController) SignIn(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Sign in successful", "token": *token})
+	c.JSON(http.StatusOK, utils.ResponseOk{Message: "Sign in successful", Data: map[string]string{"token": *token}})
 }
 
 func (a AuthController) SignUp(c *gin.Context) {
@@ -66,5 +66,5 @@ func (a AuthController) SignUp(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Sign up successful", "token": *token})
+	c.JSON(http.StatusCreated, utils.ResponseOk{Message: "Sign up successful", Data: map[string]string{"token": *token}})
 }

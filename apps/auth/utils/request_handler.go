@@ -2,6 +2,7 @@ package utils
 
 import (
 	"apps/auth/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -18,6 +19,7 @@ type ResponseError struct {
 
 type ResponseOk struct {
 	Message string `json:"message"`
+	Data    any    `json:"data"`
 } //@name ResponseOk
 
 // NewRequestHandler creates a new request handler
