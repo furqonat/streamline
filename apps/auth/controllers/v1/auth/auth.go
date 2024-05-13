@@ -23,13 +23,18 @@ func NewAuthController(logger utils.Logger, service services.AuthService) AuthCo
 
 func (a AuthController) SignIn(c *gin.Context) {
 	data := dto.SignInDto{}
-
+	// get user agent and ip address
+	ipAddress := c.ClientIP()
+	userAgent := c.Request.UserAgent()
 	if err := c.ShouldBindJSON(&data); err != nil {
 		a.logger.Debug(err.Error())
 		c.JSON(http.StatusBadRequest, utils.ResponseError{Message: err.Error()})
 		c.Abort()
 		return
 	}
+
+	data.IpAddress = &ipAddress
+	data.UserAgent = &userAgent
 
 	token, err := a.service.SignIn(data)
 	if err != nil {
@@ -43,14 +48,17 @@ func (a AuthController) SignIn(c *gin.Context) {
 
 func (a AuthController) SignUp(c *gin.Context) {
 	data := dto.SignUpDto{}
-
+	// get user agent and ip address
+	ipAddress := c.ClientIP()
+	userAgent := c.Request.UserAgent()
 	if err := c.ShouldBindJSON(&data); err != nil {
 		a.logger.Debug(err.Error())
 		c.JSON(http.StatusBadRequest, utils.ResponseError{Message: err.Error()})
 		c.Abort()
 		return
 	}
-
+	data.IpAddress = &ipAddress
+	data.UserAgent = &userAgent
 	token, err := a.service.SignUp(data)
 	if err != nil {
 		a.logger.Debug(err.Error())

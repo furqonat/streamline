@@ -42,6 +42,10 @@ func (a AuthService) SignUp(data dto.SignUpDto) (*string, error) {
 	if email != nil {
 		return nil, errors.New("user with email already exists")
 	}
+	a.logger.Info(len(data.Password))
+	if len(data.Password) < utils.MINIMUN_PASSWORD_LENGTH {
+		return nil, errors.New("password must be at least 6 characters")
+	}
 
 	user, err := a.createUser(data)
 
@@ -53,12 +57,16 @@ func (a AuthService) SignUp(data dto.SignUpDto) (*string, error) {
 }
 
 func (a AuthService) createUser(data dto.SignUpDto) (*db.UserModel, error) {
+	hashedPassword := a.hash.Hash(data.Password)
+
 	return a.db.User.CreateOne(
 		db.User.Name.Set(data.Name),
 		db.User.Username.Set(data.Username),
 		db.User.Email.Set(data.Email),
-		db.User.Password.Set(data.Password),
+		db.User.Password.Set(hashedPassword),
 		db.User.Dob.Set(data.Dob),
+	).With(
+		db.User.Roles.Fetch(),
 	).Exec(context.Background())
 }
 
@@ -75,11 +83,15 @@ func (a AuthService) signInWithEmailOrUsername(data dto.SignInDto) (*string, err
 
 func (a AuthService) getUserFromDatabase(usernameOrEmail string) (*db.UserModel, error) {
 	userWithEmail, errWithEmail := a.db.User.FindUnique(
-		db.User.Username.Equals(usernameOrEmail),
+		db.User.Email.Equals(usernameOrEmail),
+	).With(
+		db.User.Roles.Fetch(),
 	).Exec(context.Background())
 
 	userWithUsername, errWithUsername := a.db.User.FindUnique(
 		db.User.Username.Equals(usernameOrEmail),
+	).With(
+		db.User.Roles.Fetch(),
 	).Exec(context.Background())
 
 	if errWithEmail == nil && errWithUsername == nil {
