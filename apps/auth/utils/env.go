@@ -16,7 +16,9 @@ func NewEnv(log Logger) Env {
 
 	env := Env{}
 	viper.SetConfigFile(".env")
+	viper.SetConfigFile("../../../.env") // for testing purpose
 	viper.SetConfigType("env")
+	viper.SetConfigFile("../../.env") // for development purpose
 	viper.AutomaticEnv()
 
 	err := viper.ReadInConfig()

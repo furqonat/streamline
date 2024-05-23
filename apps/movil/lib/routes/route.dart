@@ -1,22 +1,22 @@
 import 'package:get/get.dart';
 import 'package:movil/pages/page.dart';
 
-class RouteNames {
-  static const splashScreen = "/";
-  static const loginScreen = "/login";
-  static const dashboardScreen = "/dashboard";
+class PageNames {
+  static const splash = "/";
+  static const signIn = "/signin";
+  static const dashboard = "/dashboard";
 }
 
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:3888769737.
 List<GetPage> pages = [
   GetPage(
-    name: RouteNames.splashScreen,
+    name: PageNames.splash,
     page: () => const SplashView(),
     binding: SplashBinding(),
   ),
   GetPage(
-    name: RouteNames.loginScreen,
-    page: () => const AuthView(),
-    binding: AuthBinding(),
+    name: PageNames.signIn,
+    page: () => const SigninView(),
+    binding: SigninBinding(),
   ),
 ];

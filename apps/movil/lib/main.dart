@@ -17,7 +17,7 @@ class Application extends StatelessWidget {
         useMaterial3: true,
       ),
       getPages: pages,
-      initialRoute: RouteNames.splashScreen,
+      initialRoute: PageNames.splash,
     );
   }
 }

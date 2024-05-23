@@ -10,7 +10,7 @@ class SplashController extends GetxController {
     super.onInit();
     Future.delayed(const Duration(seconds: 2)).then((v) {
       // todo Move page
-      Get.offAllNamed(RouteNames.loginScreen);
+      Get.offAllNamed(PageNames.signIn);
     });
   }
 }
