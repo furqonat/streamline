@@ -34,7 +34,7 @@ func TestAuthSignUpOk(t *testing.T) {
 		Dob:   time.Now(),
 		SignInDto: dto.SignInDto{
 			Username:  "admin",
-			Password:  "admin",
+			Password:  "admin1234",
 			IpAddress: &ipAddress,
 			UserAgent: &userAgent,
 			Device:    &device,
@@ -44,7 +44,7 @@ func TestAuthSignUpOk(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/signup", bytes.NewBuffer(data))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
-	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusCreated, w.Code)
 }
 
 func TestAuthSignUpFail(t *testing.T) {
@@ -102,7 +102,7 @@ func TestAuthSignInOk(t *testing.T) {
 	userAgent := "admin"
 	device := "admin"
 	body := dto.SignInDto{
-		Password:  "admin",
+		Password:  "admin1234",
 		Username:  "admin",
 		IpAddress: &ipAddress,
 		UserAgent: &userAgent,

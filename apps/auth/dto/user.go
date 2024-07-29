@@ -2,7 +2,7 @@ package dto
 
 import "time"
 
-type UpdateProfileDto struct {
+type UpdateUserDto struct {
 	Name      *string    `json:"name,omitempty"`
 	AvatarURL *string    `json:"avatar_url,omitempty"`
 	Username  *string    `json:"username,omitempty"`

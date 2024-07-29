@@ -17,9 +17,10 @@ type UserRoutes struct {
 // Setup Misc routes
 func (s UserRoutes) Setup() {
 	s.logger.Info("Setting up routes")
-	api := s.handler.Gin.Group("/apis/v1").Use(s.jwtMiddleware.HandleAuthWithRoles())
+	api := s.handler.Gin.Group("/apis/v1").Use(s.jwtMiddleware.HandleAuthWithRoles(utils.ROLE_USER, utils.ROLE_ADMIN))
 	{
 		api.GET("/user", s.userController.GetUser)
+		api.PUT("/user", s.userController.UpdateUser)
 	}
 }
 

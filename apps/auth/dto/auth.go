@@ -15,4 +15,5 @@ type SignUpDto struct {
 	Name  string    `json:"name" binding:"required"`
 	Email string    `json:"email" binding:"required"`
 	Dob   time.Time `json:"dob" binding:"required"`
+	Roles []string  `json:"role,omitempty"`
 }

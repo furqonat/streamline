@@ -56,10 +56,33 @@ func (a AuthService) SignUp(data dto.SignUpDto) (*string, error) {
 	return a.cretaeAuthToken(user, &data.SignInDto)
 }
 
+func (a AuthService) findOrCreateRole(name string) (*db.RoleModel, error) {
+	u, err := a.db.Role.FindFirst(
+		db.Role.Name.Equals(name),
+	).Exec(context.Background())
+
+	if err != nil {
+		return a.db.Role.CreateOne(
+			db.Role.Name.Set(name),
+		).Exec(context.Background())
+	}
+	return u, nil
+}
+
 func (a AuthService) createUser(data dto.SignUpDto) (*db.UserModel, error) {
 	hashedPassword := a.hash.Hash(data.Password)
+	role := []db.RoleModel{}
+	if len(data.Roles) > 0 {
+		for _, name := range data.Roles {
+			r, _ := a.findOrCreateRole(name)
+			role = append(role, *r)
+		}
+	} else {
+		r, _ := a.findOrCreateRole(utils.ROLE_USER)
+		role = append(role, *r)
+	}
 
-	return a.db.User.CreateOne(
+	user, err := a.db.User.CreateOne(
 		db.User.Name.Set(data.Name),
 		db.User.Username.Set(data.Username),
 		db.User.Email.Set(data.Email),
@@ -68,6 +91,23 @@ func (a AuthService) createUser(data dto.SignUpDto) (*db.UserModel, error) {
 	).With(
 		db.User.Roles.Fetch(),
 	).Exec(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	for _, r := range role {
+		_, err := a.db.User.FindUnique(
+			db.User.ID.Equals(user.ID),
+		).Update(
+			db.User.Roles.Link(
+				db.Role.ID.Equals(r.ID),
+			),
+		).Exec(context.Background())
+		if err != nil {
+			return nil, err
+		}
+	}
+	return user, nil
 }
 
 func (a AuthService) signInWithEmailOrUsername(data dto.SignInDto) (*string, error) {

@@ -3,6 +3,7 @@ package middlewares
 import (
 	"apps/auth/utils"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -25,7 +26,9 @@ func (j JwtMiddleware) HandleAuthWithRoles(roles ...string) gin.HandlerFunc {
 	return func(gCtx *gin.Context) {
 		bearerToken, err := j.getTokenFromHeaders(gCtx)
 		if err != nil {
-			gCtx.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+			gCtx.JSON(http.StatusUnauthorized, utils.ResponseError{
+				Message: "Unauthorized",
+			})
 			gCtx.Abort()
 			return
 		}
@@ -33,20 +36,26 @@ func (j JwtMiddleware) HandleAuthWithRoles(roles ...string) gin.HandlerFunc {
 		token, err := j.jwt.Decode(bearerToken)
 		if err != nil {
 			j.logger.Info(gin.H{"message": "Unauthorized", "error": err.Error()})
-			gCtx.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized", "error": err.Error()})
+			gCtx.JSON(http.StatusUnauthorized, utils.ResponseError{
+				Message: fmt.Sprintf("Error: %s", err.Error()),
+			})
 			gCtx.Abort()
 			return
 		}
 
 		if len(roles) < 1 {
-			gCtx.JSON(http.StatusInternalServerError, gin.H{"message": "Server Error", "error": "Please fix error and try again"})
+			gCtx.JSON(http.StatusInternalServerError, utils.ResponseError{
+				Message: "Invalid user roles",
+			})
 			gCtx.Abort()
 			return
 		}
 
 		if len(roles) > 0 {
 			if ok := j.checkRoleIsValid(roles, token); !ok {
-				gCtx.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid user roles", "error": "Please make sure you have access to this resource"})
+				gCtx.JSON(http.StatusUnauthorized, utils.ResponseError{
+					Message: "Unauthorized, invalid roles",
+				})
 				gCtx.Abort()
 				return
 			}
